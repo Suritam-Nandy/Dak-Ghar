@@ -18,15 +18,18 @@ const Chat = ({ location }) => {
 
     useEffect(() => {
         const { name, room } = queryString.parse(location.search);
-        console.log(name, room);
-        console.log(io);
         socket = io(ENDPOINT,{
             
             })
-        console.log(socket);
         setRoom(room);
-        setName(name)
-    });
+        setName(name);
+
+
+        socket.emit('join', { name, room }, ({error}) => {
+            alert()
+        });
+
+    }, [ENDPOINT,location.search ]);
     return (
         <h1>chat agaya</h1>
     )
