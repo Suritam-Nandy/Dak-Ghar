@@ -3,9 +3,11 @@ import React, { useState, useEffect } from "react";
 import queryString from 'query-string';
 import io from "socket.io-client";
 
-import './Chat.css'
-import InfoBar from '../InfoBar/InfoBar'
-import Input from '../Input/Input'
+import './Chat.css';
+import InfoBar from '../InfoBar/InfoBar';
+import Input from '../Input/Input';
+import Messages from '../Messages/Messages'
+import TextContainer from '../TextContainer/TextContainer'
 
 
 let socket;
@@ -47,7 +49,16 @@ const Chat = ({ location }) => {
         socket.on('message', (message) => {
             setMessages([...messages, message]);
         });
-    },[messages]);
+
+        socket.on("roomData", ({ users }) => {
+            setUsers(users);
+        });
+
+    }, [messages]);
+    
+
+
+
 
 // function to send msgs
     
@@ -63,13 +74,11 @@ const Chat = ({ location }) => {
     return (
         <div className="outerContainer">
         <div className="container">
-                <InfoBar room={room}/>
-            {/* <Messages messages={messages} name={name} /> */}
-            <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
-            
-                
+        <InfoBar room={room}/>
+        <Messages messages={messages} name={name} />
+        <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />            
         </div>
-        {/* <TextContainer users={users}/> */}
+        <TextContainer users={users}/>
       </div>
     )
 };
