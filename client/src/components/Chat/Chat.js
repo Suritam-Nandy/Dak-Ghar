@@ -10,28 +10,67 @@ let socket;
 const Chat = ({ location }) => {
     const [name, setName] = useState('');
     const [room, setRoom] = useState('');
-    // const [users, setUsers] = useState('');
-    // const [message, setMessage] = useState('');
-    // const [messages, setMessages] = useState([]);
+    const [users, setUsers] = useState('');
+    const [message, setMessage] = useState('');
+    const [messages, setMessages] = useState([]);
     const ENDPOINT = "localhost:5000"
 
 
     useEffect(() => {
         const { name, room } = queryString.parse(location.search);
         socket = io(ENDPOINT,{
-            
+            cors: {
+                origin: "localhost:5000",
+                methods: ["GET", "POST"],
+            }
             })
         setRoom(room);
         setName(name);
 
 
-        socket.emit('join', { name, room }, ({error}) => {
-            alert()
+        socket.emit('join', { name, room }, () => {
         });
 
-    }, [ENDPOINT,location.search ]);
+        return () => {
+            socket.emit('disconnect');
+
+            socket.off();
+
+        }
+    }, [ENDPOINT, location.search]);
+    
+
+    useEffect(() => {
+        socket.on('message', (message) => {
+            setMessages([...messages, message]);
+        });
+    },[messages]);
+
+// function to send msgs
+    
+    const sendMessage = (event) => {
+        event.preventDefault();
+        if (message) {
+            socket.emit('sendMessage', message, () => setMessage('')
+            );
+        }
+    }
+    console.log(message, messages);
+
     return (
-        <h1>chat agaya</h1>
+        <div className="outerContainer">
+        <div className="container">
+            <InfoBar  />
+            {/* <Messages messages={messages} name={name} /> */}
+            {/* <Input message={message} setMessage={setMessage} sendMessage={sendMessage} /> */}
+            
+                <input value={message}
+                onChange={(event) => setMessage(event.target.value)}
+                onKeyPress={event => event.key === 'Enter' ? sendMessage(event) : null}
+                />    
+        </div>
+        {/* <TextContainer users={users}/> */}
+      </div>
     )
 };
 
