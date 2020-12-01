@@ -18,17 +18,12 @@ const Chat = ({ location }) => {
     const [users, setUsers] = useState('');
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
-    const ENDPOINT = "http://localhost:5000";
+    const ENDPOINT = "https://dak-ghar.herokuapp.com";
 
 
     useEffect(() => {
         const { name, room } = queryString.parse(location.search);
-        socket = io(ENDPOINT, {
-            cors: {
-                origin: "http://localhost:5000",
-                methods: ["GET", "POST"],
-            }
-        });
+        socket = io(ENDPOINT);
         setRoom(room);
         setName(name);
 
