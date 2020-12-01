@@ -13,7 +13,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server, {
     cors: {
-        origin: "https://dak-ghar.netlify.app/",
+        origin: "https://dak-ghar.heroku.app/",
         methods: ["GET", "POST"],
     }
 });
@@ -58,6 +58,8 @@ io.on('connection', (socket) => {
     
 });
 app.use(router);
+app.use(cors);
+
 
 
 server.listen(PORT, () => console.log(`Server has started on port ${PORT}`));
